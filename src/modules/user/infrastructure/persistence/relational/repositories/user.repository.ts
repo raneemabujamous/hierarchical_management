@@ -7,6 +7,7 @@ import { User } from '../../../../../../packages/domins';
 import { UserRepository } from '../../user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { EntityCondition } from '../../../../../../utils/types/entity-condition.type';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UsersRelationalRepository implements UserRepository {
@@ -22,13 +23,13 @@ export class UsersRelationalRepository implements UserRepository {
     );
     return UserMapper.toDomain(newEntity);
   }
-  async findOne(fields: EntityCondition<User>): Promise<NullableType<User>> {
+  async findOne(fields: EntityCondition<User>): Promise<NullableType<UserEntity>> {
     console.log("fields::",fields)
     const entity = await this.usersRepository.findOne({
       where: fields as FindOptionsWhere<UserEntity>,
     });
-
-    return entity ? UserMapper.toDomain(entity) : null;
+    console.log("entity::",entity)
+    return plainToInstance(UserEntity,entity )
   }
 
 }

@@ -7,6 +7,8 @@ import { OrganizationRepository } from '../../organization.repository';
 import { OrganizationMapper} from '../mappers/organization.mapper';
 import { EntityCondition } from '../../../../../../utils/types/entity-condition.type';
 import{OrganizationEntity} from '../entities/organization.entity'
+import { plainToInstance } from 'class-transformer';
+
 @Injectable()
 export class OrganizationsRelationalRepository implements OrganizationRepository {
   constructor(
@@ -26,16 +28,17 @@ export class OrganizationsRelationalRepository implements OrganizationRepository
   }
 
 
-  async getOrganizationById(organizationId: number): Promise<Organization> {
-    const entity = await this.organizationRepository.findOneBy({ organization_id: organizationId });
-    if (!entity) throw new Error('Organization not found');
-    return OrganizationMapper.toDomain(entity);
+  // async getOrganizationById(organizationId: number): Promise<Organization> {
+  //   const entity = await this.organizationRepository.findOneBy({ organization_id: organizationId });
+  //   if (!entity) throw new Error('Organization not found');
+  //   return OrganizationMapper.toDomain(entity);
+  // }
+
+  async getOne(organization_id:number): Promise<any> {
+  const  entity =  this.organizationRepository.findOne({where:{organization_id:organization_id}});
+
+    return entity
   }
-
-  async getAllOrg(): Promise<Organization[]> {
-    return this.organizationRepository.find();  }
-
-
 
 
 }

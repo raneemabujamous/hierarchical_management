@@ -3,10 +3,9 @@ import { ProjectRepository } from '../project.repository';
 import { ProjectsRelationalRepository } from './repositories/project.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProjectEntity } from './entities/project.entity';
-import { ProjectUserEntity } from './entities/project.user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([ProjectEntity , ProjectUserEntity])],
+  imports: [TypeOrmModule.forFeature([ProjectEntity])],
   providers: [
     {
       provide: ProjectRepository,

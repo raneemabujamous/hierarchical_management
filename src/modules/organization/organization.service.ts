@@ -7,6 +7,7 @@ import { NullableType } from '@/utils/types/nullable.type';
 import { EntityCondition } from '@/utils/types/entity-condition.type';
 import {CreateOrganizationDto} from '@/packages/dto/organization'
 import { Organization } from '@/packages/domins';
+import { OrganizationEntity } from './infrastructure/persistence/relational/entities/organization.entity';
 
 @Injectable()
 export class OrganizationsService {
@@ -23,16 +24,18 @@ export class OrganizationsService {
     'createdAt' | 'updatedAt' | 'deletedAt'
     >
   ,): Promise<Organization> {
-    const project = await this.organizationRepository.createOrganization(data    );
+    const organization = await this.organizationRepository.createOrganization(data    );
     
 
-    return project;
+    return organization;
   }
 
-  getAllOrg(): Promise<Organization[]> {
-    return this.organizationRepository.getAllOrg();
+  // getAllOrg(): Promise<Organization[]> {
+  //   return this.organizationRepository.getAllOrg();
+  // }
+  getOne(organization_id): Promise<any> {
+    return this.organizationRepository.getOne(organization_id);
   }
-
   
   
 }

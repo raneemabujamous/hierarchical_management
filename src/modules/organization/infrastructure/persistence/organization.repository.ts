@@ -2,6 +2,7 @@ import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { EntityCondition } from '../../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { Organization } from '../../../../packages/domins';
+import { OrganizationEntity } from './relational/entities/organization.entity';
 
 export abstract class OrganizationRepository {
 
@@ -10,8 +11,8 @@ export abstract class OrganizationRepository {
   ): Promise<Organization>;
 
 
-  abstract getAllOrg(
-  ): Promise<Organization[]>;
+  abstract getOne(organization_id:number
+  ): Promise<any>;
 
 
   

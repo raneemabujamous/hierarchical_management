@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  
 } from '@nestjs/common';
 import { OrganizationsService } from './organization.service';
 import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
@@ -17,7 +18,10 @@ import { AuthUser } from '../user/user.decorator';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
 import {CreateOrganizationDto} from '@/packages/dto/organization'
 import { Organization } from '@/packages/domins';
-
+import { RolesGuard ,Roles} from '../user/role.guard';
+import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'),RolesGuard)
 @ApiTags('Organizations')
 @Controller({
   path: 'organization',
@@ -29,23 +33,22 @@ export class OrganizationsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Roles(Role.ADMIN) // only admins can access
   createOne(
-    @AuthUser() jwtPayload: JwtPayloadType,
-    @Body() createOrganizationDto: CreateOrganizationDto,
-    
+    @Body() createOrganizationDto: CreateOrganizationDto,    
   ): Promise<Organization> {
     return this.organizationService.create(createOrganizationDto);
   }
 
 
 
-  @Get('all')
-  @HttpCode(HttpStatus.OK)
-  async getAllOrg(
-  ): Promise<Organization[]> {
-    let data = await this.organizationService.getAllOrg();
-    return data;
-  }
+  // @Get('all')
+  // @HttpCode(HttpStatus.OK)
+  // async getAllOrg(
+  // ): Promise<Organization[]> {
+  //   let data = await this.organizationService.getAllOrg();
+  //   return data;
+  // }
 
 }
 

@@ -29,84 +29,84 @@ export class ProjectsController {
   constructor(private readonly projectService: ProjectsService) {}
 
 
-  @Post()
-  @HttpCode(HttpStatus.CREATED)
-  createOne(
-    @AuthUser() jwtPayload: JwtPayloadType,
-    @Body() createProjectDto: CreateProjectDto,
+  // @Post()
+  // @HttpCode(HttpStatus.CREATED)
+  // createOne(
+  //   @AuthUser() jwtPayload: JwtPayloadType,
+  //   @Body() createProjectDto: CreateProjectDto,
     
-  ): Promise<Project> {
-    return this.projectService.create(createProjectDto);
-  }
+  // ): Promise<Project> {
+  //   return this.projectService.create(createProjectDto);
+  // }
 
-  @Post('add-user')
-  @HttpCode(HttpStatus.CREATED)
-  createProjectUser(
-    @AuthUser() jwtPayload: JwtPayloadType,
-    @Body() createUserProjectDto: CreateUserProjectDto,
+  // @Post('add-user')
+  // @HttpCode(HttpStatus.CREATED)
+  // createProjectUser(
+  //   @AuthUser() jwtPayload: JwtPayloadType,
+  //   @Body() createUserProjectDto: CreateUserProjectDto,
     
-  ): Promise<ProjectUser> {
-    return this.projectService.createUserProject(createUserProjectDto);
-  }
+  // ): Promise<ProjectUser> {
+  //   return this.projectService.createUserProject(createUserProjectDto);
+  // }
 
-  @Patch()
-  @HttpCode(HttpStatus.OK)
-  update(
-    @Body() updateProjectDto: any,
-    @AuthUser() jwtPayload: JwtPayloadType
-  ): Promise<Project | null> {
-    return this.projectService.updateProject(
-      jwtPayload.user_id,
-     updateProjectDto
-    );
-  }
-
-
-  @Delete(':project_id')
-  @ApiParam({
-    name: 'project_id',
-    type: Number,
-    required: true,
-  })
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(
-    @Param('project_id') project_id: Project['project_id'],
-    @AuthUser() jwtPayload: JwtPayloadType
-
-  ): Promise<void> {
-    return this.projectService.delete(project_id,jwtPayload.user_id,);
-  }
+  // @Patch()
+  // @HttpCode(HttpStatus.OK)
+  // update(
+  //   @Body() updateProjectDto: any,
+  //   @AuthUser() jwtPayload: JwtPayloadType
+  // ): Promise<Project | null> {
+  //   return this.projectService.updateProject(
+  //     jwtPayload.user_id,
+  //    updateProjectDto
+  //   );
+  // }
 
 
+  // @Delete(':project_id')
+  // @ApiParam({
+  //   name: 'project_id',
+  //   type: Number,
+  //   required: true,
+  // })
+  // @HttpCode(HttpStatus.NO_CONTENT)
+  // remove(
+  //   @Param('project_id') project_id: Project['project_id'],
+  //   @AuthUser() jwtPayload: JwtPayloadType
 
-  @Get(':organization_id')
-  @ApiParam({
-    name: 'organization_id',
-    type: Number,
-    required: true,
-  })
-  @HttpCode(HttpStatus.OK)
-  async getAllProj(
-    @Param('organization_id') organization_id: Project['organization_id'],
-
-  ): Promise<Project[]> {
-    let data = await this.projectService.getAllProj(organization_id);
-    return data;
-  }
+  // ): Promise<void> {
+  //   return this.projectService.delete(project_id,jwtPayload.user_id,);
+  // }
 
 
-  @Get('insight/:organization_id')
-  @ApiParam({
-    name: 'organization_id',
-    type: Number,
-    required: true,
-  })
-  @HttpCode(HttpStatus.OK)
-  async getInsigit(
-    @Param('organization_id') organization_id: Project['organization_id'],
 
-  ): Promise<Project[]> {
-    let data = await this.projectService.getInsigit(organization_id);
-    return data;
-  }
+  // @Get(':organization_id')
+  // @ApiParam({
+  //   name: 'organization_id',
+  //   type: Number,
+  //   required: true,
+  // })
+  // @HttpCode(HttpStatus.OK)
+  // async getAllProj(
+  //   @Param('organization_id') organization_id: Project['organization_id'],
+
+  // ): Promise<Project[]> {
+  //   let data = await this.projectService.getAllProj(organization_id);
+  //   return data;
+  // }
+
+
+  // @Get('insight/:organization_id')
+  // @ApiParam({
+  //   name: 'organization_id',
+  //   type: Number,
+  //   required: true,
+  // })
+  // @HttpCode(HttpStatus.OK)
+  // async getInsigit(
+  //   @Param('organization_id') organization_id: Project['organization_id'],
+
+  // ): Promise<Project[]> {
+  //   let data = await this.projectService.getInsigit(organization_id);
+  //   return data;
+  // }
 }

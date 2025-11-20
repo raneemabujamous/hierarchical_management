@@ -7,13 +7,12 @@ export class UserMapper {
     user.user_id = raw.user_id;
     user.email = raw.email;
     user.password = raw.password;
-    user.previousPassword = raw.previousPassword;
     user.first_name = raw.first_name;
     user.last_name = raw.last_name;
     user.createdAt = raw.createdAt;
     user.updatedAt = raw.updatedAt;
     user.deletedAt = raw.deletedAt;
-    user.organization_id= raw.organization_id;
+    user.role = raw?.role
 
     return user;
   }
@@ -25,13 +24,12 @@ export class UserMapper {
     }
     userEntity.email = user.email;
     userEntity.password = user.password;
-    userEntity.previousPassword = user.previousPassword;
     userEntity.first_name = user.first_name;
     userEntity.last_name = user.last_name;
     userEntity.createdAt = user.createdAt;
     userEntity.updatedAt = user.updatedAt;
     userEntity.deletedAt = user.deletedAt;
-    userEntity.organization_id= user.organization_id;
+    userEntity.role = user?.role
 
     return userEntity;
   }

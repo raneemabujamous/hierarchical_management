@@ -7,43 +7,38 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { ProjectModule } from './modules/project/project.module';
 import { OrganizationModule } from './modules/organization/organization.module';
-
+import { DepartmentModule } from './modules/department/department.module';
+import { TaskModule } from './modules/task/task.module';
+import { NotificationModule } from './modules/notification/notification.module';
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-
-    TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => {
-        const ssl = (config.get<string>('DB_SSL') ?? 'true') === 'true';
-        const rejectUnauthorized =
-          (config.get<string>('DB_SSL_REJECT_UNAUTHORIZED') ?? 'true') === 'true';
-
-        return {
-          type: (config.get<'postgres'>('DB_TYPE') ?? 'postgres'),
-          host: config.get<string>('DB_HOST'),
-          port: Number(config.get<string>('DB_PORT') ?? 5432),
-          username: config.get<string>('DB_USER'),
-          password: config.get<string>('DB_PASSWORD'),
-          database: config.get<string>('DB_NAME'),
-          ssl,
-          ...(ssl ? { extra: { ssl: { rejectUnauthorized } } } : {}),
-
+    imports: [
+      ConfigModule.forRoot({ isGlobal: true }),
+      TypeOrmModule.forRootAsync({
+        useFactory: () => ({
+          type: 'postgres',
+          host: 'localhost',
+          port: 5432,
+          username: 'postgres',
+          password: 'MYDKHDR@2018',
+          database: 'project_tracker',
           autoLoadEntities: true,
-          synchronize: false, // use migrations in non-local envs
-        } as DataSourceOptions;
-      },
-      dataSourceFactory: async (options?: DataSourceOptions) => {
-        if (!options) throw new Error('TypeORM options are undefined.');
-        return new DataSource(options).initialize();
-      },
-    }),
+          synchronize: true,
+        }),
+        dataSourceFactory: async (options: DataSourceOptions | undefined) => {
+          if (!options) {
+            throw new Error('TypeORM options are undefined.');
+          }
+          return new DataSource(options).initialize();
+        },
+      }),
 
     UserModule,
     AuthModule,
     ProjectModule,
     OrganizationModule,
+    DepartmentModule,
+    TaskModule,
+    NotificationModule
   ],
 })
 export class AppModule {}

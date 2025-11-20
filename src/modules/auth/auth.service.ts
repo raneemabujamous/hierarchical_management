@@ -10,6 +10,7 @@ import { CreateUserDto } from '../../packages/dto/user';
 import { UsersService } from '../user/user.service';
 import { LoginResponseType } from './types/login-response.type';
 import * as bcrypt from 'bcrypt';
+import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,12 +29,14 @@ export class AuthService {
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(password,10);
-    console.log("hashedPassword:",hashedPassword)
-
+    console.log("::::",dto)
+    const role = dto.role?.trim().toLowerCase() as Role || Role.EMPLOYEE;
+console.log("role:",role)
     const newUser = await this.usersService.create({
       ...dto,
       email,
       password: hashedPassword,
+      role
     });
 
     return newUser;
@@ -53,7 +56,7 @@ console.log("password, user.password",password, user.password)
       throw new UnauthorizedException('Invalid email or password');
     }
 
-    const payload = { user_id: user.user_id, email: user.email };
+    const payload = { user_id: user.user_id, email: user.email,role: user.role };
     const token = await this.jwtService.signAsync(payload, {
       expiresIn: '1d',
     });

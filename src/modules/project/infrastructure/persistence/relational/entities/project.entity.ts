@@ -16,27 +16,19 @@ import { Project } from '../../../../../../packages/domins';
 import { EntityRelationalHelper } from '../../../../../../utils/relational-entity-helper'
 import { OrganizationEntity } from '@/modules/organization/infrastructure/persistence/relational/entities/organization.entity';
 import { UserEntity } from '@/modules/user/infrastructure/persistence/relational/entities/user.entity';
-import { ProjectUserEntity } from './project.user.entity';
+import { DepartmentEntity } from '@/modules/department/infrastructure/persistence/relational/entities/department.entity';
+import { TaskEntity } from '@/modules/task/infrastructure/persistence/relational/entities/task.entity';
 
-export enum ProjectStatus {
-  ACTIVE = "active",
-  COMPLETED = "completed"
-}
 
 @Entity({
-  name: 'projects',
+  name: 'project',
 })
-export class ProjectEntity extends EntityRelationalHelper implements Project {
+export class ProjectEntity  {
   @PrimaryGeneratedColumn()
   project_id: number;
 
   @Column()
-  organization_id: number;
-
-  @Column()
   project_title: string;
-  @Column({ type: "enum", enum: ProjectStatus, default: ProjectStatus.ACTIVE })
-  status: ProjectStatus;
 
   @CreateDateColumn()
   createdAt: Date;
@@ -47,24 +39,10 @@ export class ProjectEntity extends EntityRelationalHelper implements Project {
   @DeleteDateColumn()
   deletedAt: Date;
  
-  @ManyToOne(
-    () => OrganizationEntity,
-    (user) => user.organization_id,
-    {
-      cascade: true,
-      onDelete: 'CASCADE',
-    }
-  )
-  @JoinColumn({
-    name: 'organization_id',
-    referencedColumnName: 'organization_id',
-  })
-  organization: OrganizationEntity;
-
-
-  @OneToMany(() => ProjectUserEntity, (project_user) => project_user.project, {
-    onDelete: 'CASCADE',
-  })
-  project_users: ProjectUserEntity[];
-
+  @ManyToOne(() => DepartmentEntity, (d) => d.projects, { onDelete: 'CASCADE' })
+  department: DepartmentEntity;
+  
+  
+  @OneToMany(() => TaskEntity, (t) => t.project, { cascade: true })
+  tasks: TaskEntity[];
 }

@@ -20,6 +20,7 @@ import { AuthRegisterDto } from '@/packages/dto/auth/auth-register-login.dto';
 import { LoginResponseType } from './types/login-response.type';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateUserDto } from '../../packages/dto/user';
 
 @ApiTags('Auth')
 @Controller({
@@ -37,6 +38,8 @@ export class AuthController {
   public login(
     @Body() loginDto: AuthEmailLoginDto
   ): Promise<LoginResponseType> {
+
+
     return this.service.login(loginDto);
   }
 
@@ -44,22 +47,13 @@ export class AuthController {
 
   @Post('email/register')
   @HttpCode(HttpStatus.OK)
-  @UseInterceptors(FileInterceptor('file'))
   async register(
-    @Body() authRegisterDto: AuthRegisterDto
+    @Body() createProfileDto: CreateUserDto
 
 
   ): Promise<any> {
-    let userDto = {
-      role_id: Number(authRegisterDto.role_id),
-      first_name: authRegisterDto.first_name,
-      last_name: authRegisterDto.last_name,
-      user_img_url: authRegisterDto.user_img_url,
-      password: authRegisterDto.password,
-      email:authRegisterDto.email,
-      organization_id: authRegisterDto.organization_id
-    };
-    let data = this.service.register(userDto
+   
+    let data = this.service.register(createProfileDto
     );
     return data
   }
