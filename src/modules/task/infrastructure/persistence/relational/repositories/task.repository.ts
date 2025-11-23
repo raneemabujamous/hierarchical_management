@@ -40,11 +40,17 @@ export class TasksRelationalRepository implements TaskRepository {
     if (role === Role.EMPLOYEE) {
       query.andWhere('user.user_id = :userId', { userId });
     }
+    if (role === Role.MANAGER) {
+      query
+        .leftJoin('task.project', 'project')
+        .leftJoin('project.department', 'department')
+        .andWhere('department.managerUserId = :userId', { userId });
+    }
   
     const task = await query.getOne();
   
     if (!task) {
-      throw new NotFoundException('Task not found or user not assigned to it');
+      throw new NotFoundException('Task not found or access denied to this task');
     }
   
     return task;

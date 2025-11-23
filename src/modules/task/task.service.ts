@@ -99,16 +99,15 @@ export class TasksService {
   if (user.role === Role.EMPLOYEE) {
     where.assignees = {user_id: user.user_id};
 
-  console.log("where:::",where)
-  const task = await this.taskRepository.findOne({
-    ...where,
-  });
 
-  if (!task) {
-    throw new NotFoundException('Project not found or access denied to this task');
-  }
 }
-  
+const task = await this.taskRepository.findOne({
+  ...where,
+});
+
+if (!task) {
+  throw new NotFoundException('Project not found or access denied to this task');
+}
   const updated = await this.taskRepository.update(data);
 
   return updated;
