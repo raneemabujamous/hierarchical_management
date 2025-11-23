@@ -11,12 +11,15 @@ import { BadRequestException, ForbiddenException, NotFoundException } from '@nes
 import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
 import { ProjectsService } from '../project/project.service';
 import { UsersService } from '../user/user.service';
+import { ProjectEntity } from '../project/infrastructure/persistence/relational/entities/project.entity';
+import { NotificationsService } from '../notification/notification.service';
 
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository,
     private readonly projectsService: ProjectsService,
     private readonly usersService: UsersService,
+    private readonly notificationsService: NotificationsService,
 
     
   ) {}
@@ -110,4 +113,27 @@ export class TasksService {
 
   return updated;
 }
+
+async batchUpdateTasks(taskIds: number[], status: string) {
+  if (!taskIds || taskIds.length === 0) return;
+  const tasks = await this.taskRepository.findByIds(taskIds);
+  tasks.forEach((task) => (task.status = status));
+  await this.taskRepository.save(tasks);
+
+  const updatesMap: Map<number, { project: ProjectEntity; count: number }> =
+    new Map();
+
+  tasks.forEach((task) => {
+    const projId = task.project.project_id;
+    if (!updatesMap.has(projId)) {
+      updatesMap.set(projId, { project: task.project, count: 0 });
+    }
+    updatesMap.get(projId).count++;
+  });
+
+  const updates = Array.from(updatesMap.values());
+  console.log("updates::",updates)
+  await this.notificationsService.sendTaskUpdateNotifications(updates);
+}
+
 }

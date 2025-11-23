@@ -2,7 +2,7 @@ import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 import { SetMetadata } from '@nestjs/common';
-import { Role } from './infrastructure/persistence/relational/entities/role.enum'; // your Role enum
+import { Role } from './infrastructure/persistence/relational/entities/role.enum';
 
 export const ROLES_KEY = 'roles';
 export const Roles = (...roles: Role[]) => SetMetadata(ROLES_KEY, roles);
@@ -18,15 +18,13 @@ export class RolesGuard implements CanActivate {
     ]);
 
     if (!requiredRoles || requiredRoles.length === 0) {
-      return true; // no role restriction
+      return true; 
     }
 
     const request = context.switchToHttp().getRequest();
-    const user = request.user; // populated by JwtAuthGuard
+    const user = request.user; 
 
-    console.log("user::",user,"context::",context)
     if (!user) return false;
-    console.log("user::",user.role,"requiredRoles::",requiredRoles)
 
     return requiredRoles.includes(user.role);
   }

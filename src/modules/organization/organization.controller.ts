@@ -33,7 +33,7 @@ export class OrganizationsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
-  @Roles(Role.ADMIN) // only admins can access
+  @Roles(Role.ADMIN)
   createOne(
     @Body() createOrganizationDto: CreateOrganizationDto,    
   ): Promise<Organization> {
@@ -41,14 +41,6 @@ export class OrganizationsController {
   }
 
 
-
-  // @Get('all')
-  // @HttpCode(HttpStatus.OK)
-  // async getAllOrg(
-  // ): Promise<Organization[]> {
-  //   let data = await this.organizationService.getAllOrg();
-  //   return data;
-  // }
 
 }
 

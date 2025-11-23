@@ -28,12 +28,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService,
   ) {}
 
-  // @Post()
-  // @HttpCode(HttpStatus.CREATED)
-  // create(@Body() createProfileDto: CreateUserDto): Promise<User> {
-  //   return this.usersService.create(createProfileDto);
-
-  // }
 
  @Get(':user_id')
   @ApiParam({

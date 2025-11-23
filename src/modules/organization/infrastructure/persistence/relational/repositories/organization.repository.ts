@@ -19,20 +19,16 @@ export class OrganizationsRelationalRepository implements OrganizationRepository
   ) {}
 
   async createOrganization(data: Organization): Promise<Organization> {
-    const persistenceModel = OrganizationMapper.toPersistence(data); // OrganizationEntity
+    const persistenceModel = OrganizationMapper.toPersistence(data);
     const newEntity = await this.organizationRepository.save(
       this.organizationRepository.create(persistenceModel)
     );
-    return OrganizationMapper.toDomain(newEntity); // returns Organization
+    return OrganizationMapper.toDomain(newEntity); 
   
   }
 
 
-  // async getOrganizationById(organizationId: number): Promise<Organization> {
-  //   const entity = await this.organizationRepository.findOneBy({ organization_id: organizationId });
-  //   if (!entity) throw new Error('Organization not found');
-  //   return OrganizationMapper.toDomain(entity);
-  // }
+
 
   async getOne(organization_id:number): Promise<any> {
   const  entity =  this.organizationRepository.findOne({where:{organization_id:organization_id}});

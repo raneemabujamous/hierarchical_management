@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository ,In} from 'typeorm';
 import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { Task, User ,  } from '../../../../../../packages/domins';
 import { TaskRepository } from '../../task.repository';
@@ -49,8 +49,9 @@ export class TasksRelationalRepository implements TaskRepository {
   
     return task;
   }
-  
-
+  async save (tasks :any[] ){
+    await this.taskRepository.save(tasks); 
+  }
   async createTask(data: any , project:any): Promise<any> {
   
 
@@ -67,7 +68,14 @@ export class TasksRelationalRepository implements TaskRepository {
     return task;
     
   }
+  async  findByIds(ids: [] ): Promise<  TaskEntity[]> {
+    const users = await this.taskRepository.find({
+      where: { task_id: In(ids) },
+      relations:['project']
 
+    });
+return users
+  }
   async update(
     dept 
   ): Promise<Task | null> {

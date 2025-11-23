@@ -9,7 +9,7 @@ import { UserModule } from '../user/user.module';
 const infrastructurePersistenceModule = RelationalNotificationPersistenceModule;
 
 @Module({
-  imports: [infrastructurePersistenceModule,   UserModule, AuthModule, // <- VERY IMPORTANT!
+  imports: [infrastructurePersistenceModule,   UserModule, AuthModule, 
 ],
   controllers: [NotificationsController],
   providers: [NotificationsService],

@@ -20,6 +20,7 @@ import { Task,  } from '@/packages/domins';
 import {CreateTaskDto,UpdateTaskDto,CreateUserTaskDto} from '@/packages/dto/task'
 import { RolesGuard ,Roles} from '../user/role.guard';
 import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
+import { BatchUpdateTasksDto } from '@/packages/dto/task/batch-update-tasks.dto';
 
 @ApiTags('Tasks')
 @ApiBearerAuth()
@@ -72,6 +73,12 @@ export class TasksController {
     @Body() dto: UpdateTaskDto
   ) {
     return this.taskService.updateTask(task_id , dto, jwtPayload);
+  }
+  @Post('batch-update')
+  async batchUpdate(@Body() body: BatchUpdateTasksDto) {
+    const { taskIds, status } = body;
+    await this.taskService.batchUpdateTasks(taskIds, status);
+    return { message: 'Tasks updated and notifications generated' };
   }
 
 }

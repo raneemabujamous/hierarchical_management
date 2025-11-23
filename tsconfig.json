@@ -2,7 +2,7 @@
   "compileOnSave": false,
   "compilerOptions": {
     "strict": false,
-    "noEmitOnError": false,      // allow transpile even with errors
+    "noEmitOnError": false,     
     "rootDir": ".",
     "sourceMap": true,
     "declaration": false,
@@ -22,9 +22,6 @@
 
     "paths": {    
         "@/*": ["src/*", "dist/*"],
-
-      // "@/*": ["src/*"],
-      // "@/packages/*": ["src/packages/*"],
       "@/utils/*": ["src/utils/*"],
       "@packages/*": ["src/packages/*", "dist/packages/*"]
 

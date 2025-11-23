@@ -10,10 +10,6 @@ export abstract class DepartmentRepository {
     data: any
   ): Promise<any>;
 
-
-  // abstract getAllOrg(
-  // ): Promise<Department[]>;
-
   abstract findOne(
     fields:any
   ): Promise<any>;

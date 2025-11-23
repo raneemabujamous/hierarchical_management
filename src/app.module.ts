@@ -10,6 +10,7 @@ import { OrganizationModule } from './modules/organization/organization.module';
 import { DepartmentModule } from './modules/department/department.module';
 import { TaskModule } from './modules/task/task.module';
 import { NotificationModule } from './modules/notification/notification.module';
+import { SeederModule } from './modules/seeder/seeder.module';
 @Module({
     imports: [
       ConfigModule.forRoot({ isGlobal: true }),
@@ -38,7 +39,8 @@ import { NotificationModule } from './modules/notification/notification.module';
     OrganizationModule,
     DepartmentModule,
     TaskModule,
-    NotificationModule
+    NotificationModule , 
+    SeederModule
   ],
 })
 export class AppModule {}

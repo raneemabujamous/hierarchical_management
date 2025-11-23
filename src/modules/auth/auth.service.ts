@@ -4,7 +4,6 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-// import bcrypt from 'bcryptjs';
 import { AuthEmailLoginDto } from '@/packages/dto/auth/auth-email-login.dto';
 import { CreateUserDto } from '../../packages/dto/user';
 import { UsersService } from '../user/user.service';

@@ -29,10 +29,6 @@ export class OrganizationsService {
 
     return organization;
   }
-
-  // getAllOrg(): Promise<Organization[]> {
-  //   return this.organizationRepository.getAllOrg();
-  // }
   getOne(organization_id): Promise<any> {
     return this.organizationRepository.getOne(organization_id);
   }

@@ -2,6 +2,7 @@ import { DeepPartial } from '../../../../utils/types/deep-partial.type';
 import { EntityCondition } from '../../../../utils/types/entity-condition.type';
 import { NullableType } from '../../../../utils/types/nullable.type';
 import { Task,  } from '../../../../packages/domins';
+import { TaskEntity } from './relational/entities/task.entity';
 
 export abstract class TaskRepository {
 
@@ -21,4 +22,8 @@ export abstract class TaskRepository {
     dept: any, 
   ): Promise<Task | null>;
 
+
+  abstract findByIds(ids: Array<number | string> ,): Promise<TaskEntity[]>;
+
+abstract save(tasks:any[]): Promise<any>;
 }

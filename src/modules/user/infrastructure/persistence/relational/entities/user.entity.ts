@@ -20,7 +20,6 @@ import { EntityRelationalHelper } from '../../../../../../utils/relational-entit
 import { Exclude, Expose } from 'class-transformer';
 import { OrganizationEntity } from '@/modules/organization/infrastructure/persistence/relational/entities/organization.entity';
 import { ProjectEntity } from '@/modules/project/infrastructure/persistence/relational/entities/project.entity';
-// import { ProjectUserEntity } from '@/modules/project/infrastructure/persistence/relational/entities/project.user.entity';
 import { DepartmentEntity } from '@/modules/department/infrastructure/persistence/relational/entities/department.entity';
 import { TaskEntity } from '@/modules/task/infrastructure/persistence/relational/entities/task.entity';
 import { Role } from './role.enum';

@@ -26,7 +26,7 @@ export class CreateTaskDto {
   @IsArray()
   @ArrayNotEmpty()
   @Type(() => Number)
-  assignee_ids?: number[]; // user ids to assign
+  assignee_ids?: number[]
 
   @ApiProperty({ example:1 })
   @IsNotEmpty()
