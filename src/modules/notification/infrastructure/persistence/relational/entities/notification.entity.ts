@@ -26,9 +26,6 @@ export class NotificationEntity  {
   @Column({ type: 'text' })
   message: string;
 
-  @Column({ default: false })
-  sent: boolean;
-
   @ManyToOne(() => ProjectEntity, { nullable: true })
   project: ProjectEntity;
 
