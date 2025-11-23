@@ -5,110 +5,74 @@ import { ProjectRepository } from './infrastructure/persistence/project.reposito
 import { ProjectUser, User } from '../../packages/domins'
 import { NullableType } from '@/utils/types/nullable.type';
 import { EntityCondition } from '@/utils/types/entity-condition.type';
-import {CreateProjectDto,UpdateProjectDto,CreateUserProjectDto} from '@/packages/dto/project'
+import {CreateProjectDto,UpdateProjectDto,} from '@/packages/dto/project'
 import { Project } from '@/packages/domins';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { DepartmentsService } from '../department/department.service';
+import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
 
 @Injectable()
 export class ProjectsService {
   constructor(private readonly projectRepository: ProjectRepository,
 
-    
+    private readonly departmentsService: DepartmentsService,
+
   ) {}
 
-  // async create(
-  //   data: Omit<
-  //   CreateProjectDto,
-  //     'project_id' | 'createdAt' | 'updatedAt' | 'deletedAt'
-  //   >
-  // ): Promise<Project> {
-
-  //   const project = await this.projectRepository.createProject(data     );
-    
-
-  //   return project;
-  // }
-
-
-  // async createUserProject(
-  //   data: Omit<
-  //   CreateUserProjectDto,
-  //     'project_user_id' | 'createdAt' | 'updatedAt' | 'deletedAt'
-  //   >
-  // ): Promise<ProjectUser> {
-  //   const projectUser = await this.projectRepository.createUserProject(data);
-    
-
-  //   return projectUser;
-  // }
-
   
-  // async updateProject(
-  //   user_id: number,
-  //   payload: Partial<
-  //     Omit<Project, 'createdAt' | 'updatedAt' | 'deletedAt'>
-  //   >
-  // ): Promise<Project | null> {
 
-  //   const project:any = await this.projectRepository.getProjectById(payload.project_id);
-  //   if (!project) {
-  //     throw new NotFoundException('Project not found');
-  //   }
 
-  //   const isMember =
-  //   Array.isArray(project.project_users) &&
-  //   project.project_users.some(
-  //     (pu: any) =>
-  //       pu.user_id === user_id ||                // if you keep raw FK columns on join entity
-  //       pu.user?.user_id === user_id             // if join entity maps User relation
-  //   );
-
-  // if (!isMember) {
-  //   throw new ForbiddenException(
-  //     "You can't update this project; you're not a member"
-  //   );
-  // }
-
+  async findOne(
+    data:any
+  ): Promise<any> {
+    const where: any = {
+      project_id: Number(data.project_id),
+    };
+  
+    if (data.user.role === Role.MANAGER) {
+      where.department = {manager :{user_id: data.user.user_id}} ;
+    }
+    if (data.user.role === Role.EMPLOYEE) {
+      throw new NotFoundException('Project not found or access denied');
+    }
+    console.log("where:::",where)
+    const dept = await this.projectRepository.findOne({
+      ...where,
+    });
+  
+    if (!dept) {
+      throw new NotFoundException('Project not found or access denied');
+    }
+  
+    return dept;
+  }
+  async createProject(
+   user, data 
+  ): Promise<Project> {
     
-  //     return this.projectRepository.update(
-  //       payload
-  //     );
+    const department = await this.departmentsService.findOne({department_id: data.department_id , user:{user_id: user.user_id, role:user.role} });
+    if (!department) throw new NotFoundException('department not found');
+    console.log("department:", department)
+
+   const existing = await this.projectRepository.findOne({
+          
+            project_title: data.project_title.trim(),
+            
+            department: { department_id: data.department_id },
+  
+        });
     
-  
-  
-  // }  
+        if (existing) {
+          throw new BadRequestException(
+            `Project '${data.project_title}' already exists in this department`,
+          );
+        }
+    
+        const project = await this.projectRepository.createProject(data,department)
+    
+    return project;
+  }
 
-
-  // async delete(project_id: Project['project_id'] , user_id : number ): Promise<void> {
-  //   const project:any = await this.projectRepository.getProjectById(project_id);
-  //   if (!project) {
-  //     throw new NotFoundException('Project not found');
-  //   }
-  
-  //   const isMember =
-  //   Array.isArray(project.project_users) &&
-  //   project.project_users.some(
-  //     (pu: any) =>
-  //       pu.user_id === user_id ||               
-  //       pu.user?.user_id === user_id             
-  //   );
-
-  // if (!isMember) {
-  //   throw new ForbiddenException(
-  //     "You can't delete this project; you're not a member"
-  //   );
-  // }
-
-  //   await this.projectRepository.delete(project_id);
-  // }
-
-  // getAllProj(organization_id:number): Promise<Project[]> {
-  //   return this.projectRepository.getAllProj(organization_id);
-  // }
-
-  // getInsigit(organization_id:number): Promise<any> {
-  //   return this.projectRepository.getInsigit(organization_id);
-  // }
 
   
 }

@@ -214,8 +214,6 @@ export class Task {
   @JoinTable({ name: 'task_assignees' })
   assignees: User[];
 
-  @Column({ default: false })
-  archived: boolean;
 
   @CreateDateColumn()
   createdAt: Date;

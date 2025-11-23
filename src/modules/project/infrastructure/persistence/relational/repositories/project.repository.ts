@@ -7,28 +7,42 @@ import { ProjectRepository } from '../../project.repository';
 import { ProjectMapper, ProjectUserMapper} from '../mappers/project.mapper';
 import { EntityCondition } from '../../../../../../utils/types/entity-condition.type';
 import{ProjectEntity} from '../entities/project.entity'
-// import { ProjectUserEntity } from '../entities/project.user.entity';
+import { plainToInstance } from 'class-transformer';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+
 @Injectable()
 export class ProjectsRelationalRepository implements ProjectRepository {
   constructor(
     @InjectRepository(ProjectEntity)
     private readonly projectRepository: Repository<ProjectEntity>,
-
-    // @InjectRepository(ProjectUserEntity)
-    // private readonly projectUserRepo: Repository<ProjectUserEntity>,
-
   ) {}
 
-//   async createProject(data: Project): Promise<Project> {
 
-//     console.log("data::",data)
-//     const persistenceModel = ProjectMapper.toPersistence(data); // ProjectEntity
-//     const newEntity = await this.projectRepository.save(
-//       this.projectRepository.create(persistenceModel)
-//     );
-//     return ProjectMapper.toDomain(newEntity); // returns Project
+  async findOne(fields: any): Promise<NullableType<ProjectEntity>> {
+    console.log("fields::",fields)
+    const entity = await this.projectRepository.findOne({
+      where: fields as FindOptionsWhere<ProjectEntity>,
+    });
+    console.log("entity::",entity)
+    return plainToInstance(ProjectEntity,entity )
+  }
+  async createProject(data: any , department:any): Promise<any> {
   
-//   }
+
+    const projectEntity = this.projectRepository.create({
+      project_title: data.project_title.trim(),
+      department: department,
+    });
+    
+    const project = await this.projectRepository.save(projectEntity);
+    return project;
+    
+  }
+
+
+
+
+
 
 //   async createUserProject(data: ProjectUser): Promise<ProjectUser> {
 

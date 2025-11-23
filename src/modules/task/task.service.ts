@@ -2,113 +2,112 @@ import {
   Injectable,
 } from '@nestjs/common';
 import { TaskRepository } from './infrastructure/persistence/task.repository';
-import { TaskUser, User } from '../../packages/domins'
+import {  User } from '../../packages/domins'
 import { NullableType } from '@/utils/types/nullable.type';
 import { EntityCondition } from '@/utils/types/entity-condition.type';
 import {CreateTaskDto,UpdateTaskDto,CreateUserTaskDto} from '@/packages/dto/task'
 import { Task } from '@/packages/domins';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
+import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
+import { ProjectsService } from '../project/project.service';
+import { UsersService } from '../user/user.service';
 
 @Injectable()
 export class TasksService {
   constructor(private readonly taskRepository: TaskRepository,
+    private readonly projectsService: ProjectsService,
+    private readonly usersService: UsersService,
 
     
   ) {}
 
-  // async create(
-  //   data: Omit<
-  //   CreateTaskDto,
-  //     'task_id' | 'createdAt' | 'updatedAt' | 'deletedAt'
-  //   >
-  // ): Promise<Task> {
+  async findOne(
+    data:any
+  ): Promise<any> {
+    const where: any = {
+      task_id: Number(data.task_id),
+    };
+  
+    if (data.user.role === Role.MANAGER) {
+      where.project = {department:{manager :{user_id: data.user.user_id}} };
+    }
+    if (data.user.role === Role.EMPLOYEE) {
+      where.assignees = {user_id: data.user.user_id};
 
-  //   const task = await this.taskRepository.createTask(data     );
+    console.log("where:::",where)
+    const task = await this.taskRepository.findOne({
+      ...where,
+    });
+  
+    if (!task) {
+      throw new NotFoundException('Project not found or access denied to this task');
+    }
+  
+    return task;
+  }
+  }
+  
+
+  async createTask(
+    user, data 
+   ): Promise<Task> {
+     
+     const project  = await this.projectsService.findOne({project_id: data.project_id ,user} );
+     if (!project) throw new NotFoundException('Project not found or acess denied ');
+     console.log("projectExisit:", project)
+     
+        let assignees: User[] = [];
+        if (data.assignee_ids && data.assignee_ids.length > 0) {
+          assignees = await this.usersService.findByIds(data.assignee_ids , Role.EMPLOYEE);
+          const foundIds = assignees.map((u) => u.user_id);
+          const missing = data.assignee_ids.filter((id) => !foundIds.includes(id));
+          if (missing.length) {
+            throw new BadRequestException(`Assignees not found: ${missing.join(', ')} or not EMPLOYEE`);
+          }
+        }
+    
     
 
-  //   return task;
-  // }
+     const task = await this.taskRepository.createTask({
+            task_title: data.task_title.trim(),
+      description:data.description,
+      status:data.status,
+      assignees :assignees ,
+
+     },project)
+     
+     return task;
+   }
+ async findTaskByUserAndTaskId(user_id: number, task_id: number,role){
+  return await this.taskRepository.findTaskByUserAndTaskId(user_id,task_id , role)
+ }
 
 
-  // async createUserTask(
-  //   data: Omit<
-  //   CreateUserTaskDto,
-  //     'task_user_id' | 'createdAt' | 'updatedAt' | 'deletedAt'
-  //   >
-  // ): Promise<TaskUser> {
-  //   const taskUser = await this.taskRepository.createUserTask(data);
-    
+ async updateTask(
+  task_id, data , user
+): Promise<any> {
+  const where: any = {
+    task_id: Number(data.task_id),
+  };
 
-  //   return taskUser;
-  // }
+  if (user.role === Role.MANAGER) {
+    where.project = {department:{manager :{user_id: user.user_id}} };
+  }
+  if (user.role === Role.EMPLOYEE) {
+    where.assignees = {user_id: user.user_id};
 
+  console.log("where:::",where)
+  const task = await this.taskRepository.findOne({
+    ...where,
+  });
+
+  if (!task) {
+    throw new NotFoundException('Project not found or access denied to this task');
+  }
+}
   
-  // async updateTask(
-  //   user_id: number,
-  //   payload: Partial<
-  //     Omit<Task, 'createdAt' | 'updatedAt' | 'deletedAt'>
-  //   >
-  // ): Promise<Task | null> {
+  const updated = await this.taskRepository.update(data);
 
-  //   const task:any = await this.taskRepository.getTaskById(payload.task_id);
-  //   if (!task) {
-  //     throw new NotFoundException('Task not found');
-  //   }
-
-  //   const isMember =
-  //   Array.isArray(task.task_users) &&
-  //   task.task_users.some(
-  //     (pu: any) =>
-  //       pu.user_id === user_id ||                // if you keep raw FK columns on join entity
-  //       pu.user?.user_id === user_id             // if join entity maps User relation
-  //   );
-
-  // if (!isMember) {
-  //   throw new ForbiddenException(
-  //     "You can't update this task; you're not a member"
-  //   );
-  // }
-
-    
-  //     return this.taskRepository.update(
-  //       payload
-  //     );
-    
-  
-  
-  // }  
-
-
-  // async delete(task_id: Task['task_id'] , user_id : number ): Promise<void> {
-  //   const task:any = await this.taskRepository.getTaskById(task_id);
-  //   if (!task) {
-  //     throw new NotFoundException('Task not found');
-  //   }
-  
-  //   const isMember =
-  //   Array.isArray(task.task_users) &&
-  //   task.task_users.some(
-  //     (pu: any) =>
-  //       pu.user_id === user_id ||               
-  //       pu.user?.user_id === user_id             
-  //   );
-
-  // if (!isMember) {
-  //   throw new ForbiddenException(
-  //     "You can't delete this task; you're not a member"
-  //   );
-  // }
-
-  //   await this.taskRepository.delete(task_id);
-  // }
-
-  // getAllProj(organization_id:number): Promise<Task[]> {
-  //   return this.taskRepository.getAllProj(organization_id);
-  // }
-
-  // getInsigit(organization_id:number): Promise<any> {
-  //   return this.taskRepository.getInsigit(organization_id);
-  // }
-
-  
+  return updated;
+}
 }

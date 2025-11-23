@@ -9,18 +9,22 @@ import {
   UseGuards,
   HttpStatus,
   HttpCode,
+  Patch
 } from '@nestjs/common';
 import { DepartmentsService } from './department.service';
 import { ApiBearerAuth, ApiTags, ApiParam } from '@nestjs/swagger';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthUser } from '../user/user.decorator';
 import { JwtPayloadType } from '../auth/strategies/types/jwt-payload.type';
-import {CreateDepartmentDto} from '@/packages/dto/department'
+import {CreateDepartmentDto,UpdateDepartmentDto} from '@/packages/dto/department'
 import { Department } from '@/packages/domins';
+import { RolesGuard ,Roles} from '../user/role.guard';
+import { Role } from '../user/infrastructure/persistence/relational/entities/role.enum';
+import { DepartmentEntity } from './infrastructure/persistence/relational/entities/department.entity';
 
 
 @ApiBearerAuth()
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(AuthGuard('jwt'),RolesGuard)
 @ApiTags('Departments')
 @Controller({
   path: 'department',
@@ -32,6 +36,7 @@ export class DepartmentsController {
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
+  @Roles(Role.ADMIN) 
   createOne(
     @AuthUser() jwtPayload: JwtPayloadType,
     @Body() createDepartmentDto: CreateDepartmentDto,
@@ -41,14 +46,39 @@ export class DepartmentsController {
   }
 
 
+  @Get(':department_id')
+  @ApiParam({
+    name: 'department_id',
+    type: Number,
+    required: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN , Role.MANAGER)  
+  async get(
+    @AuthUser() jwtPayload: JwtPayloadType,
+    @Param('department_id') department_id: number,
+  ): Promise<Department> {
+    let data = await this.departmentService.findOne({department_id:department_id, user:jwtPayload});
+    return data;
+  }
 
-  // @Get('all')
-  // @HttpCode(HttpStatus.OK)
-  // async getAllOrg(
-  // ): Promise<Department[]> {
-  //   let data = await this.departmentService.getAllOrg();
-  //   return data;
-  // }
+
+
+  @Patch(':department_id')
+  @ApiParam({
+    name: 'department_id',
+    type: Number,
+    required: true,
+  })
+  @HttpCode(HttpStatus.OK)
+  @Roles(Role.ADMIN , Role.MANAGER)  
+  async update(
+    @AuthUser() jwtPayload: JwtPayloadType,
+    @Param('department_id') department_id: number,
+    @Body() dto: UpdateDepartmentDto
+  ) {
+    return this.departmentService.updateDepartment(department_id , dto, jwtPayload);
+  }
 
 }
 

@@ -22,7 +22,6 @@ import { OrganizationEntity } from '@/modules/organization/infrastructure/persis
 @Entity({
   name: 'department',
 })
-@Unique(['organization', 'department_title']) // composite unique constraint
 export class DepartmentEntity {
 @PrimaryGeneratedColumn()
 department_id: number;

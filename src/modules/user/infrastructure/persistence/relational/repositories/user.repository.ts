@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindOptionsWhere, Repository } from 'typeorm';
+import { FindOptionsWhere, Repository ,In} from 'typeorm';
 import { UserEntity } from '../entities/user.entity'
 import { NullableType } from '../../../../../../utils/types/nullable.type';
 import { User } from '../../../../../../packages/domins';
@@ -8,6 +8,7 @@ import { UserRepository } from '../../user.repository';
 import { UserMapper } from '../mappers/user.mapper';
 import { EntityCondition } from '../../../../../../utils/types/entity-condition.type';
 import { plainToInstance } from 'class-transformer';
+import { Role } from '../entities/role.enum';
 
 @Injectable()
 export class UsersRelationalRepository implements UserRepository {
@@ -32,4 +33,11 @@ export class UsersRelationalRepository implements UserRepository {
     return plainToInstance(UserEntity,entity )
   }
 
+  async  findByIds(ids: [] , role): Promise<UserEntity[]> {
+    const users = await this.usersRepository.find({
+      where: { user_id: In(ids)  ,       role: role},
+
+    });
+return users
+  }
 }

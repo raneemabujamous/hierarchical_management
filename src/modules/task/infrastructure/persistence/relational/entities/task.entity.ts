@@ -49,9 +49,6 @@ project: ProjectEntity;
 assignees: UserEntity[];
 
 
-@Column({ default: false })
-archived: boolean;
-
 
 @CreateDateColumn()
 createdAt: Date;

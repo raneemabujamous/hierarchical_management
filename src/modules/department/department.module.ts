@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 
 import { DepartmentsController } from './department.controller';
+import { forwardRef } from '@nestjs/common';
 
 import { DepartmentsService } from './department.service';
 import { RelationalDepartmentPersistenceModule } from './infrastructure/persistence/relational/relational-persistence.module';
@@ -12,7 +13,9 @@ const infrastructurePersistenceModule = RelationalDepartmentPersistenceModule;
 
 @Module({
   imports: [infrastructurePersistenceModule,   UserModule, AuthModule,
-    OrganizationModule , ProjectModule // <- VERY IMPORTANT!
+    OrganizationModule ,
+    
+    
 ],
   controllers: [DepartmentsController],
   providers: [DepartmentsService],

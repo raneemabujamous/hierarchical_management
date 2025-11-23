@@ -11,5 +11,6 @@ export abstract class UserRepository {
 
 
   abstract findOne(fields: EntityCondition<User>): Promise<UserEntity>;
+  abstract findByIds(ids: Array<number | string> , role :any): Promise<UserEntity[]>;
 
 }

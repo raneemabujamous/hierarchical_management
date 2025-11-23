@@ -6,8 +6,6 @@ export enum ProjectStatus {
 export class Project {
   project_id: number;
   project_title: string 
-  status:ProjectStatus 
-organization_id:number
   createdAt: Date;
   updatedAt: Date;
   deletedAt: Date;

@@ -19,10 +19,11 @@ export class UpdateTaskDto {
 
   @ApiProperty({ example:1 })
   @IsNotEmpty()
-  organization_id: number ;
-
-  @ApiProperty({ example:1 })
-  @IsNotEmpty()
   task_id: number ;
+
+  @ApiProperty({ example: 'Doe' })
+  @IsNotEmpty()
+  description: string ;
+
   
 }
